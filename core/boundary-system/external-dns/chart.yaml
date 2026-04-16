@@ -1,0 +1,44 @@
+apiVersion: "helm.toolkit.fluxcd.io/v2"
+kind: "HelmRelease"
+metadata:
+  name: "external-dns"
+  namespace: "boundary-system"
+
+spec:
+  interval: "10m"
+
+  chart:
+    spec:
+      interval: "10m"
+
+      sourceRef:
+        kind: "HelmRepository"
+        name: "external-dns"
+
+      chart: "external-dns"
+      version: "1.16.0"
+
+  values:
+    serviceAccount:
+      annotations:
+        eks.amazonaws.com/role-arn: "arn:aws:iam::${account_id}:role/${full_name}-external-dns"
+
+    provider:
+      name: "aws"
+
+    policy: "upsert-only"
+
+    sources:
+    - "ingress"
+
+    txtOwnerId: "${full_name}"
+    txtPrefix: "externaldns-"
+    extraArgs:
+    - "--aws-prefer-cname"
+
+    tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+
+    nodeSelector:
+      eks/nodegroup: "system"

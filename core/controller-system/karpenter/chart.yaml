@@ -1,0 +1,31 @@
+apiVersion: "helm.toolkit.fluxcd.io/v2"
+kind: "HelmRelease"
+metadata:
+  name: "karpenter"
+  namespace: "controller-system"
+
+spec:
+  interval: "10m"
+
+  chart:
+    spec:
+      interval: "10m"
+
+      sourceRef:
+        kind: "HelmRepository"
+        name: "karpenter"
+
+      chart: "karpenter"
+      version: "1.8.5"
+
+  values:
+    serviceAccount:
+      annotations:
+        eks.amazonaws.com/role-arn: "arn:aws:iam::${account_id}:role/${full_name}-karpenter"
+
+    settings:
+      clusterName: "${full_name}"
+      interruptionQueue: "${full_name}-karpenter"
+
+    nodeSelector:
+      eks/nodegroup: "system"

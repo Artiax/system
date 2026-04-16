@@ -1,0 +1,58 @@
+apiVersion: "helm.toolkit.fluxcd.io/v2"
+kind: "HelmRelease"
+metadata:
+  name: "cert-manager"
+  namespace: "controller-system"
+
+spec:
+  interval: "10m"
+
+  chart:
+    spec:
+      interval: "10m"
+
+      sourceRef:
+        kind: "HelmRepository"
+        name: "cert-manager"
+
+      chart: "cert-manager"
+      version: "v1.17.1"
+
+  values:
+    serviceAccount:
+      annotations:
+        eks.amazonaws.com/role-arn: "arn:aws:iam::${account_id}:role/${full_name}-cert-manager"
+
+    crds:
+      enabled: true
+
+    tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+
+    nodeSelector:
+      eks/nodegroup: "system"
+
+    webhook:
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+
+      nodeSelector:
+        eks/nodegroup: "system"
+
+    cainjector:
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+
+      nodeSelector:
+        eks/nodegroup: "system"
+
+    startupapicheck:
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+
+      nodeSelector:
+        eks/nodegroup: "system"

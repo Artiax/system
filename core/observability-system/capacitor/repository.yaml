@@ -1,0 +1,10 @@
+apiVersion: "source.toolkit.fluxcd.io/v1"
+kind: "HelmRepository"
+metadata:
+  name: "onechart"
+  namespace: "observability-system"
+
+spec:
+  interval: "12h"
+
+  url: "https://chart.onechart.dev"

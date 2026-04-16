@@ -1,0 +1,25 @@
+apiVersion: "sqs.services.k8s.aws/v1alpha1"
+kind: "Queue"
+metadata:
+  name: "karpenter"
+  namespace: "controller-system"
+
+spec:
+  queueName: "${full_name}-karpenter"
+
+  policy: |
+    {
+      "Statement": [{
+        "Effect": "Allow",
+
+        "Principal": {
+          "Service": [
+            "events.amazonaws.com",
+            "sqs.amazonaws.com"
+          ]
+        },
+
+        "Action": "sqs:SendMessage",
+        "Resource": "arn:aws:sqs:${region}:${account_id}:${full_name}-karpenter"
+      }]
+    }

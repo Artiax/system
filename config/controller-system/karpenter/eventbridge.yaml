@@ -1,0 +1,43 @@
+apiVersion: "eventbridge.services.k8s.aws/v1alpha1"
+kind: "Rule"
+metadata:
+  name: "karpenter-ec2"
+  namespace: "controller-system"
+
+spec:
+  name: "${full_name}-karpenter-ec2"
+
+  eventPattern: |
+    {
+      "source": ["aws.ec2"],
+      "detail-type": [
+        "EC2 Instance Rebalance Recommendation",
+        "EC2 Instance State-change Notification",
+        "EC2 Spot Instance Interruption Warning"
+      ]
+    }
+
+  targets:
+  - id: "karpenter"
+    arn: "arn:aws:sqs:${region}:${account_id}:${full_name}-karpenter"
+
+---
+
+apiVersion: "eventbridge.services.k8s.aws/v1alpha1"
+kind: "Rule"
+metadata:
+  name: "karpenter-health"
+  namespace: "controller-system"
+
+spec:
+  name: "${full_name}-karpenter-health"
+
+  eventPattern: |
+    {
+      "source": ["aws.health"],
+      "detail-type": ["AWS Health Event"]
+    }
+
+  targets:
+  - id: "karpenter"
+    arn: "arn:aws:sqs:${region}:${account_id}:${full_name}-karpenter"

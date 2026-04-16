@@ -1,0 +1,9 @@
+apiVersion: "iam.services.k8s.aws/v1alpha1"
+kind: "InstanceProfile"
+metadata:
+  name: "karpenter"
+  namespace: "controller-system"
+
+spec:
+  name: "${full_name}-karpenter"
+  role: "${full_name}-node-group"

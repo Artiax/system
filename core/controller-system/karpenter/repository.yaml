@@ -1,0 +1,11 @@
+apiVersion: "source.toolkit.fluxcd.io/v1"
+kind: "HelmRepository"
+metadata:
+  name: "karpenter"
+  namespace: "controller-system"
+
+spec:
+  interval: "12h"
+
+  type: "oci"
+  url: "oci://public.ecr.aws/karpenter"
