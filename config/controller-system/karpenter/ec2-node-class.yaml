@@ -10,7 +10,8 @@ spec:
       Type: "private"
 
   securityGroupSelectorTerms:
-  - name: "${full_name}-node"
+  - tags:
+      Name: "${full_name}-node"
 
   instanceProfile: "${full_name}-karpenter"
 
