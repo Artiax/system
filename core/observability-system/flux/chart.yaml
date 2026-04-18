@@ -1,0 +1,51 @@
+apiVersion: "helm.toolkit.fluxcd.io/v2"
+kind: "HelmRelease"
+metadata:
+  name: "flux"
+  namespace: "observability-system"
+
+spec:
+  interval: "10m"
+
+  chart:
+    spec:
+      interval: "10m"
+
+      sourceRef:
+        kind: "HelmRepository"
+        name: "flux"
+
+      chart: "flux-operator"
+      version: "0.47.0"
+
+  values:
+    fullnameOverride: "flux"
+
+    web:
+      serverOnly: true
+      networkPolicy:
+        create: false
+
+      ingress:
+        enabled: true
+
+        className: "nginx"
+
+        hosts:
+        - host: "flux-observability-system-${replica}.${name}.${domain}"
+          paths:
+          - path: "/"
+            pathType: "ImplementationSpecific"
+
+        tls:
+        - hosts:
+          - "flux-observability-system-${replica}.${name}.${domain}"
+
+    installCRDs: false
+
+    tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+
+    nodeSelector:
+      eks/nodegroup: "system"

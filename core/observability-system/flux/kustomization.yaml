@@ -3,6 +3,4 @@ kind: "Kustomization"
 
 resources:
 - "chart.yaml"
-- "ingress.yaml"
-- "rbac.yaml"
 - "repository.yaml"
