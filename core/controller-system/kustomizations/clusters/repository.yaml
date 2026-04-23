@@ -1,0 +1,12 @@
+apiVersion: "source.toolkit.fluxcd.io/v1"
+kind: "GitRepository"
+metadata:
+  name: "clusters"
+  namespace: "controller-system"
+
+spec:
+  interval: "10m"
+
+  url: "${git_clusters}"
+  ref:
+    branch: "main"
